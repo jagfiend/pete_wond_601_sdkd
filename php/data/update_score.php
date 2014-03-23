@@ -1,0 +1,3 @@
+<?php
+// update_score
+// leave blank...
