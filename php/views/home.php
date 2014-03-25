@@ -18,8 +18,8 @@
 			<td>SCORE</td>
 		</tr>
 		<tr>
-		<!-- php foreach loops over array of results and prints each row to the page... -->
-		<?php $i = 0; foreach ($scores as $score) : ?>
+		<!-- php foreach loops over array of highscores and prints each score to the page... -->
+		<?php $scores = readTop100(); $i = 0; foreach ($scores as $score) : ?>
 				<td><?php $i++; echo $i; ?></td>
 				<td><img src="assets/img/<?php echo $score['player_photo'] ?>" class="avatar_image"></td>
 				<td><?php echo $score['player_name']; ?></td>

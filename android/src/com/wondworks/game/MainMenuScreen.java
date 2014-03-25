@@ -15,7 +15,6 @@ public class MainMenuScreen extends Screen {
 	
 	@Override
 	public void present(float deltaTime) { 
-	
 		// load graphics....
 		Graphics g = game.getGraphics();
 		g.drawPixmap(Assets.background, 0, 0); 
@@ -24,10 +23,7 @@ public class MainMenuScreen extends Screen {
 	}
 	
 	public void update(float deltaTime) {
-		
 		// update function listens for touch events on each frame...
-		Graphics g = game.getGraphics();
-		
 		List < TouchEvent > touchEvents = game.getInput().getTouchEvents();
 		game.getInput().getKeyEvents();
 		
@@ -39,7 +35,7 @@ public class MainMenuScreen extends Screen {
 				// what to do if game screen button pressed...
 				if( inBounds(event, 20, 290, 270, 50) ) { 
 					game.setScreen(new GameScreen(game));
-					Assets.click.play(1); 
+					if(Settings.soundEnabled) Assets.click.play(1); 
 					return;
 				}
 				
@@ -47,7 +43,7 @@ public class MainMenuScreen extends Screen {
 				// note addition to y coordinate to factor in button and margin above...
 				if( inBounds(event, 20, 290 + 60, 270, 50) ) {
 					game.setScreen(new HighscoreScreen(game));
-					Assets.click.play(1); 
+					if(Settings.soundEnabled) Assets.click.play(1); 
 					return;
 				}
 				
@@ -55,7 +51,7 @@ public class MainMenuScreen extends Screen {
 				// note addition to y coordinate to factor in 2x button and margin above...
 				if( inBounds(event, 20, 290 + 120, 270, 50) ) {
 					game.setScreen(new InstructionsScreen(game)); 
-					Assets.click.play(1); 
+					if(Settings.soundEnabled) Assets.click.play(1); 
 					return;
 				} 
 			} // end of TOUCH_UP if....

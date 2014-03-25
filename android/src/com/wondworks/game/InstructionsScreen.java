@@ -16,8 +16,6 @@ public class InstructionsScreen extends Screen {
 	@Override
 	public void update(float deltaTime) { 
 		// update function listens for touch events on each frame...
-		Graphics g = game.getGraphics();
-		
 		List < TouchEvent > touchEvents = game.getInput().getTouchEvents();
 		game.getInput().getKeyEvents();
 		
@@ -29,7 +27,7 @@ public class InstructionsScreen extends Screen {
 				// what to do if game screen button pressed...
 				if( inBounds(event, 25, 410, 270, 50) ) { 
 					game.setScreen(new MainMenuScreen(game));
-					Assets.click.play(1); 
+					if(Settings.soundEnabled) Assets.click.play(1);  
 					return;
 				}
 			}

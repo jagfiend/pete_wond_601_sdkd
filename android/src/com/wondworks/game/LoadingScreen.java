@@ -7,6 +7,8 @@ import com.wondworks.game.framework.Screen;
 
 public class LoadingScreen extends Screen { 
 	
+	// this class initialises the game and load assets and settings to be used elsewhere...
+	
 	public LoadingScreen(Game game) {
 		super(game); 
 	}
@@ -26,6 +28,7 @@ public class LoadingScreen extends Screen {
 		// for game...
 		Assets.gameHUD = g.newPixmap("img_gameHUD.png", PixmapFormat.ARGB4444);
 		Assets.gameBoard = g.newPixmap("img_gameBoard.png", PixmapFormat.ARGB4444);
+		Assets.gameReady = g.newPixmap("img_gameReady.png", PixmapFormat.ARGB4444);
 		Assets.gamePaused = g.newPixmap("img_gamePaused.png", PixmapFormat.ARGB4444);
 		Assets.gameOver = g.newPixmap("img_gameOver.png", PixmapFormat.ARGB4444);
 		Assets.gameButtons = g.newPixmap("img_gameButtons.png", PixmapFormat.ARGB4444);
