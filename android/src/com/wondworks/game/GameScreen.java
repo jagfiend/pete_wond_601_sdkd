@@ -14,64 +14,16 @@ public class GameScreen extends Screen {
 		Ready, Running, Paused, GameOver
 	}
 	
-	GameState state = GameState.Ready; 
+	GameState state = GameState.Ready;
+	World world;
+	int oldScore = 0;
+	String score = "0";
 	
 	public GameScreen(Game game) {
 		super(game);
-	}
-
-	@Override
-	public void present(float deltaTime) { 
-		// load graphics....
-		Graphics g = game.getGraphics();
-		// draw static elements
-		g.drawPixmap(Assets.background, 0, 0); 
-		g.drawPixmap(Assets.gameHUD, 15, 10);
-		g.drawPixmap(Assets.gameBoard, 11, 70);
-		
-		if(state == GameState.Ready) drawReadyUI();
-		if(state == GameState.Running) drawRunningUI();
-		if(state == GameState.Paused) drawPausedUI();
-		if(state == GameState.GameOver) drawGameOverUI();
-		
-		// show appropriate sound button...
-		if (Settings.soundEnabled){
-			g.drawPixmap(Assets.gameButtons, 38, 395, 0, 0, 65, 65);
-		} else {
-			g.drawPixmap(Assets.gameButtons, 38, 395, 64, 0, 65, 65);
-		}
-		
-		// draw quit button...
-		g.drawPixmap(Assets.gameButtons, 216, 395, 256, 0, 65, 65);
-	
+		world = new World();
 	}
 	
-	private void drawReadyUI() {
-		Graphics g = game.getGraphics();
-		g.drawPixmap(Assets.gameReady, 11, 70);
-		// show nonfunctional pause button...
-		g.drawPixmap(Assets.gameButtons, 128, 395, 128, 0, 65, 65);
-	}
-	
-	private void drawRunningUI() {
-		Graphics g = game.getGraphics();
-		// show pause button...
-		g.drawPixmap(Assets.gameButtons, 128, 395, 128, 0, 65, 65);
-	}
-	
-	private void drawPausedUI() {
-		Graphics g = game.getGraphics();
-		// show game paused overlay...
-		g.drawPixmap(Assets.gamePaused, 11, 70);
-		// show resume button...
-		g.drawPixmap(Assets.gameButtons, 128, 395, 192, 0, 65, 65);
-	}
-
-	private void drawGameOverUI() {
-		// TODO Auto-generated method stub
-		
-	}
-
 	public void update(float deltaTime) {
 		// update function listens for touch events on each frame...
 		List < TouchEvent > touchEvents = game.getInput().getTouchEvents();
@@ -144,6 +96,18 @@ public class GameScreen extends Screen {
 					return;
 				}		
 			}
+			
+		}
+		
+		world.update(deltaTime); 
+		if(world.gameOver) {
+			if(Settings.soundEnabled) Assets.gameOverLose.play(1);
+			state = GameState.GameOver; 
+		}
+		if(oldScore != world.score) { 
+			oldScore = world.score; 
+			score = "" + oldScore; 
+			if(Settings.soundEnabled) Assets.tileSmash.play(1);
 		}
 	}
 	
@@ -180,6 +144,77 @@ public class GameScreen extends Screen {
 			return true;
 		else 
 			return false;
+	}
+
+	@Override
+	public void present(float deltaTime) { 
+		// load graphics....
+		Graphics g = game.getGraphics();
+		// draw static elements
+		g.drawPixmap(Assets.background, 0, 0); 
+		g.drawPixmap(Assets.gameHUD, 15, 10);
+		g.drawPixmap(Assets.gameBoard, 11, 70);
+		
+		// draw text and tile elements through world class...
+		// add text code...
+		drawWorld();
+		
+		if(state == GameState.Ready) drawReadyUI();
+		if(state == GameState.Running) drawRunningUI();
+		if(state == GameState.Paused) drawPausedUI();
+		if(state == GameState.GameOver) drawGameOverUI();
+		
+		// show appropriate sound button...
+		if (Settings.soundEnabled){
+			g.drawPixmap(Assets.gameButtons, 38, 395, 0, 0, 65, 65);
+		} else {
+			g.drawPixmap(Assets.gameButtons, 38, 395, 64, 0, 65, 65);
+		}
+		
+		// draw quit button...
+		g.drawPixmap(Assets.gameButtons, 216, 395, 256, 0, 65, 65);
+	
+	}
+	
+	private void drawWorld() {
+		Graphics g = game.getGraphics();
+		Tile tile = world.tile;
+		
+		Pixmap tilePixmap = null;
+		if(tile.type == Tile.TYPE_0) tilePixmap = Assets.whiteTile;
+		if(tile.type == Tile.TYPE_1) tilePixmap = Assets.redTile;
+		if(tile.type == Tile.TYPE_2) tilePixmap = Assets.blackTile;
+		
+		int x = 11;
+		int y = 70;
+		g.drawPixmap(tilePixmap, x, y);
+				
+	}
+	
+	
+	private void drawReadyUI() {
+		Graphics g = game.getGraphics();
+		g.drawPixmap(Assets.gameReady, 11, 70);
+		// show nonfunctional pause button...
+		g.drawPixmap(Assets.gameButtons, 128, 395, 128, 0, 65, 65);
+	}
+	
+	private void drawRunningUI() {
+		Graphics g = game.getGraphics();
+		// show pause button...
+		g.drawPixmap(Assets.gameButtons, 128, 395, 128, 0, 65, 65);
+	}
+	
+	private void drawPausedUI() {
+		Graphics g = game.getGraphics();
+		// show game paused overlay...
+		g.drawPixmap(Assets.gamePaused, 11, 70);
+		// show resume button...
+		g.drawPixmap(Assets.gameButtons, 128, 395, 192, 0, 65, 65);
+	}
+
+	private void drawGameOverUI() {
+		// code graphics for gameover state...	
 	}
 
 	@Override
