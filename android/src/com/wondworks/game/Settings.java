@@ -11,20 +11,24 @@ import com.wondworks.game.framework.FileIO;
 public class Settings {
 
 	public static boolean soundEnabled = true;
-	public static int[] highscores = new int[] { 100, 80, 50, 30, 10 };
+	public static int[] highscores = new int[] { 1000, 100, 66, 50, 40, 30, 25, 20, 10, 1 };
 	
 	public static void load(FileIO files) { 
 		BufferedReader in = null;
 		try {
-			in = new BufferedReader(new InputStreamReader( files.readFile(".game")));
+			
+			in = new BufferedReader( new InputStreamReader( files.readFile(".game") ));
+			
 			soundEnabled = Boolean.parseBoolean(in.readLine()); 
-			for (int i = 0; i < 5; i++) {
+			
+			for (int i = 0; i < 10; i++) {
 				highscores[i] = Integer.parseInt(in.readLine()); 
 			}
-		} catch (IOException e) {
-		// :( It's ok we have defaults
+			
+		} catch (IOException e) { 
+		// :( It's ok we have defaults.. 
 		} catch (NumberFormatException e) {
-		// :/ It's ok, defaults save our day
+		// :/ It's ok, defaults save our day...
 		} finally { 
 			try {
 				if (in != null) in.close();
@@ -36,9 +40,9 @@ public class Settings {
 	public static void save(FileIO files) { 
 		BufferedWriter out = null;
 		try {
-			out = new BufferedWriter(new OutputStreamWriter( files.writeFile(".game")));
+			out = new BufferedWriter( new OutputStreamWriter( files.writeFile(".game") ));
 			out.write(Boolean.toString(soundEnabled)); 
-			for (int i = 0; i < 5; i++) {
+			for (int i = 0; i < 10; i++) {
 				out.write(Integer.toString(highscores[i])); 
 			}
 		} catch (IOException e) { 
@@ -51,9 +55,9 @@ public class Settings {
 	}
 
 	public static void addScore(int score) { 
-		for (int i = 0; i < 5; i++) {
+		for (int i = 0; i < 10; i++) {
 			if (highscores[i] < score) { 
-				for (int j = 4; j > i; j--)
+				for (int j = 9; j > i; j--)
 					highscores[j] = highscores[j - 1]; highscores[i] = score;
 				break;
 			}

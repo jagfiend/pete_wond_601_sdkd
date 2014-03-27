@@ -7,10 +7,10 @@ import com.wondworks.game.framework.Screen;
 
 public class LoadingScreen extends Screen { 
 	
-	// this class initialises the game and load assets and settings to be used elsewhere...
+	// this class initializes the game and load assets and settings to be used elsewhere...
 	
 	public LoadingScreen(Game game) {
-		super(game); 
+		super(game);
 	}
 	
 	public void update(float deltaTime) {
@@ -38,6 +38,7 @@ public class LoadingScreen extends Screen {
 		
 		// for high scores...
 		Assets.highscores = g.newPixmap("img_highscores.png", PixmapFormat.ARGB4444);
+		Assets.numbers = g.newPixmap("img_numbers.png", PixmapFormat.ARGB4444);
 		
 		// for instructions...
 		Assets.instructions = g.newPixmap("img_instructions.png", PixmapFormat.ARGB4444);
@@ -69,4 +70,3 @@ public class LoadingScreen extends Screen {
 	public void dispose() { }
 	
 } // end of class....
-	

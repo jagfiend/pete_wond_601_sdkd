@@ -2,6 +2,8 @@ package com.wondworks.game;
 
 import java.util.List;
 
+import android.util.Log;
+
 import com.wondworks.game.framework.Game;
 import com.wondworks.game.framework.Graphics;
 import com.wondworks.game.framework.Input.TouchEvent;
@@ -9,9 +11,28 @@ import com.wondworks.game.framework.Pixmap;
 import com.wondworks.game.framework.Screen;
 
 public class GameScreen extends Screen {
+	
+	public enum GameState {
+		Ready ("Ready"), 
+		Running ("Running"), 
+		Paused ("Paused"),
+		GameOver ("GameOver");
+		
+		
+		// extra stuff for debugging....delete later...
+		private final String name;       
 
-	enum GameState {
-		Ready, Running, Paused, GameOver
+	    private GameState (String s) {
+	        name = s;
+	    }
+
+	    public boolean equalsName(String otherName){
+	        return (otherName == null)? false:name.equals(otherName);
+	    }
+
+	    public String toString(){
+	       return name;
+	    }
 	}
 	
 	GameState state = GameState.Ready;
@@ -19,10 +40,15 @@ public class GameScreen extends Screen {
 	int oldScore = 0;
 	String score = "0";
 	
+	// for log...
+	public static final String TAG = "Game State";
+	
 	public GameScreen(Game game) {
 		super(game);
 		world = new World();
 	}
+	
+	// update functions...
 	
 	public void update(float deltaTime) {
 		// update function listens for touch events on each frame...
@@ -43,7 +69,7 @@ public class GameScreen extends Screen {
 			if(event.type == TouchEvent.TOUCH_UP) {
 				// what to do if sound button pressed...
 				if( inBounds(event, 38, 395, 64, 64) ) { 
-					// update sound enabled boolean...
+					// invert sound enabled boolean...
 					Settings.soundEnabled = !Settings.soundEnabled;
 					// make a noise?
 					if (Settings.soundEnabled) Assets.click.play(1); 
@@ -69,12 +95,15 @@ public class GameScreen extends Screen {
 			
 			TouchEvent event = touchEvents.get(i); 
 			
-			if(event.type == TouchEvent.TOUCH_UP) {	
+			if(event.type == TouchEvent.TOUCH_UP) {
+				// what to do if ready screen touched...
 				if( inBounds(event, 11, 70, 296, 296) ){
+					// update game state...
 					state = GameState.Running;
+					// make a noise?
 					if (Settings.soundEnabled) Assets.click.play(1);
+					return;
 				}
-				return;
 			}
 		}	
 	}
@@ -90,29 +119,43 @@ public class GameScreen extends Screen {
 				// what to do if pause/resume button pressed...
 				if( inBounds(event, 128, 395, 64, 64) ) { 
 					// update game state...
+					
+					Log.i(TAG, state.name );
+					
 					state = GameState.Paused;
+					
+					Log.i(TAG, state.name );
+					
 					// make a noise?
 					if (Settings.soundEnabled) Assets.click.play(1);
 					return;
-				}		
+				}	
 			}
-			
 		}
 		
+		// run updates on world...
 		world.update(deltaTime); 
+		
+		// to do if game over...
 		if(world.gameOver) {
+		
 			if(Settings.soundEnabled) Assets.gameOverLose.play(1);
 			state = GameState.GameOver; 
+		
 		}
+		
+		// update score...
 		if(oldScore != world.score) { 
+			
 			oldScore = world.score; 
 			score = "" + oldScore; 
 			if(Settings.soundEnabled) Assets.tileSmash.play(1);
+		
 		}
 	}
 	
 	private void updateGameOver(List<TouchEvent> touchEvents) {
-		// TODO Auto-generated method stub
+		
 		
 	}
 
@@ -129,9 +172,7 @@ public class GameScreen extends Screen {
 					// update game state...
 					state = GameState.Running;
 					// make a noise?
-					if (Settings.soundEnabled){
-						Assets.click.play(1); 
-					}
+					if (Settings.soundEnabled) Assets.click.play(1);
 					return;
 				}		
 			}
@@ -145,6 +186,9 @@ public class GameScreen extends Screen {
 		else 
 			return false;
 	}
+	
+	
+	// present functions render the graphics to the screen...
 
 	@Override
 	public void present(float deltaTime) { 
@@ -177,6 +221,7 @@ public class GameScreen extends Screen {
 	}
 	
 	private void drawWorld() {
+		
 		Graphics g = game.getGraphics();
 		Tile tile = world.tile;
 		
@@ -191,30 +236,35 @@ public class GameScreen extends Screen {
 				
 	}
 	
-	
 	private void drawReadyUI() {
+		
 		Graphics g = game.getGraphics();
 		g.drawPixmap(Assets.gameReady, 11, 70);
 		// show nonfunctional pause button...
 		g.drawPixmap(Assets.gameButtons, 128, 395, 128, 0, 65, 65);
+	
 	}
 	
 	private void drawRunningUI() {
+		
 		Graphics g = game.getGraphics();
 		// show pause button...
 		g.drawPixmap(Assets.gameButtons, 128, 395, 128, 0, 65, 65);
+	
 	}
 	
 	private void drawPausedUI() {
+	
 		Graphics g = game.getGraphics();
 		// show game paused overlay...
 		g.drawPixmap(Assets.gamePaused, 11, 70);
 		// show resume button...
 		g.drawPixmap(Assets.gameButtons, 128, 395, 192, 0, 65, 65);
+	
 	}
 
 	private void drawGameOverUI() {
-		// code graphics for gameover state...	
+		// code graphics for game over state...	
 	}
 
 	@Override

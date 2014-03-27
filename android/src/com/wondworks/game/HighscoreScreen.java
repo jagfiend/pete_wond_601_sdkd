@@ -9,8 +9,16 @@ import com.wondworks.game.framework.Input.TouchEvent;
 
 public class HighscoreScreen extends Screen {
 
+	
+	String lines[] = new String[10];
+	
+	
 	public HighscoreScreen(Game game) {
 		super(game);
+		
+		for ( int i=0; i < 10; i++) {
+			lines[i] = "" + (i+1) + " " + Settings.highscores[i] ;
+		}
 	}
 
 	@Override
@@ -44,14 +52,50 @@ public class HighscoreScreen extends Screen {
 
 	@Override
 	public void present(float deltaTime) {
-		// TODO Auto-generated method stub
-		// function draws the very basic instructions page...
+		
+		// function draws the very high scores page...
 		Graphics g = game.getGraphics();
 		g.drawPixmap(Assets.background, 0, 0); 
 		g.drawPixmap(Assets.highscores, 20, 20);
+		
+		// dynamic text from high scores array....
+		int y = 75;
+		
+		for (int i=0; i<10; i++){
+			
+			drawText(g, lines[i], 16, y);
+			y += 33;
+		
+		}
+		
 		g.drawPixmap(Assets.backButton, 25, 410);
 	}
 
+	public void drawText(Graphics g, String line, int x, int y) { 
+		
+		int len = line.length();
+		
+		for (int i = 0; i < len; i++) {
+			
+			char character = line.charAt(i);
+			
+			int srcX = 0;
+			int srcWidth = 0;
+			
+			if (character == ' ') { 
+				x += 16;
+				continue; 
+			} else {
+				srcX = (character - '0') * 16;
+				srcWidth = 16;
+			}
+			
+			g.drawPixmap(Assets.numbers, x, y, srcX, 0, srcWidth, 30);
+		    x += srcWidth;
+		    
+		} // end of for loop...
+	}
+	
 	@Override
 	public void pause() {
 

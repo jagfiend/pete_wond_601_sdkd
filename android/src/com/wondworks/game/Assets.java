@@ -10,6 +10,7 @@ public class Assets {
 	public static Pixmap logo;
 	public static Pixmap mainMenu;
 	public static Pixmap highscores;
+	public static Pixmap numbers;
 	public static Pixmap instructions;
 	public static Pixmap backButton;
 	public static Pixmap gameHUD;
