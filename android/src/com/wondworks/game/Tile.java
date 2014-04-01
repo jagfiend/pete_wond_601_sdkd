@@ -11,10 +11,21 @@ public class Tile {
 	public int type;
 	
 	public Tile(int x, int y, int type){
+	
+		// constructor...
+		
 		this.x = x;
 		this.y = y;
 		this.type = type;
 		
-	} // end constructor
+	}
+	
+	public void move(){
+		
+		// function to move tile one square further down the grid...
+		
+		y += 1;
+		
+	}
 	
 } // end of class...

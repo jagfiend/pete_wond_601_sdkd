@@ -12,37 +12,15 @@ import com.wondworks.game.framework.Screen;
 
 public class GameScreen extends Screen {
 	
-	public enum GameState {
-		Ready ("Ready"), 
-		Running ("Running"), 
-		Paused ("Paused"),
-		GameOver ("GameOver");
-		
-		
-		// extra stuff for debugging....delete later...
-		private final String name;       
-
-	    private GameState (String s) {
-	        name = s;
-	    }
-
-	    public boolean equalsName(String otherName){
-	        return (otherName == null)? false:name.equals(otherName);
-	    }
-
-	    public String toString(){
-	       return name;
-	    }
+	enum GameState {
+		Ready, Running, Paused, GameOver
 	}
 	
 	GameState state = GameState.Ready;
 	World world;
 	int oldScore = 0;
 	String score = "0";
-	
-	// for log...
-	public static final String TAG = "Game State";
-	
+		
 	public GameScreen(Game game) {
 		super(game);
 		world = new World();
@@ -55,13 +33,7 @@ public class GameScreen extends Screen {
 		List < TouchEvent > touchEvents = game.getInput().getTouchEvents();
         game.getInput().getKeyEvents();
         
-        // call state dependent functions...
-		if(state == GameState.Ready) updateReady(touchEvents);
-		if(state == GameState.Running) updateRunning(touchEvents,deltaTime);
-		if(state == GameState.Paused) updatePaused(touchEvents);
-		if(state == GameState.GameOver) updateGameOver(touchEvents);
-		
-		int len = touchEvents.size(); 
+        int len = touchEvents.size(); 
 		for(int i = 0; i < len; i++) {
 			
 			TouchEvent event = touchEvents.get(i); 
@@ -86,6 +58,24 @@ public class GameScreen extends Screen {
 				}
 			} // end of TOUCH_UP if....
 		} // end of for...
+        
+        // call state dependent functions...
+		if(state == GameState.Ready){
+			updateReady(touchEvents); 
+			return;
+		}
+		if(state == GameState.Running){
+			updateRunning(touchEvents,deltaTime); 
+			return;
+		}
+		if(state == GameState.Paused){
+			updatePaused(touchEvents); 
+			return;
+		}
+		if(state == GameState.GameOver){
+			updateGameOver(touchEvents); 
+			return;
+		}
 	} // end of function...
 	
 	private void updateReady(List < TouchEvent > touchEvents) { 
@@ -110,6 +100,8 @@ public class GameScreen extends Screen {
 	
 	private void updateRunning(List<TouchEvent> touchEvents, float deltaTime) {
 	
+		List < Tile > tiles = world.tiles;
+		
 		int len = touchEvents.size(); 
 		for(int i = 0; i < len; i++) {
 			
@@ -119,17 +111,25 @@ public class GameScreen extends Screen {
 				// what to do if pause/resume button pressed...
 				if( inBounds(event, 128, 395, 64, 64) ) { 
 					// update game state...
-					
-					Log.i(TAG, state.name );
-					
-					state = GameState.Paused;
-					
-					Log.i(TAG, state.name );
-					
+					state = GameState.Paused;		
 					// make a noise?
 					if (Settings.soundEnabled) Assets.click.play(1);
 					return;
-				}	
+				}
+			}
+				
+			if(event.type == TouchEvent.TOUCH_DOWN){
+				// loop over array to know what to do if tile pressed....
+				for(Tile tile : tiles){
+					if( inBounds(event, tile.x, tile.y, 40, 40) ){
+						// make a noise?
+						if(Settings.soundEnabled) Assets.tileSmash.play(1);
+						// remove from tiles array...
+						Log.i("Tile Removed:", "" + tile);
+						tiles.remove(tile);
+						return;
+					}
+				}
 			}
 		}
 		
@@ -199,8 +199,6 @@ public class GameScreen extends Screen {
 		g.drawPixmap(Assets.gameHUD, 15, 10);
 		g.drawPixmap(Assets.gameBoard, 11, 70);
 		
-		// draw text and tile elements through world class...
-		// add text code...
 		drawWorld();
 		
 		if(state == GameState.Ready) drawReadyUI();
@@ -223,18 +221,33 @@ public class GameScreen extends Screen {
 	private void drawWorld() {
 		
 		Graphics g = game.getGraphics();
-		Tile tile = world.tile;
 		
-		Pixmap tilePixmap = null;
-		if(tile.type == Tile.TYPE_0) tilePixmap = Assets.whiteTile;
-		if(tile.type == Tile.TYPE_1) tilePixmap = Assets.redTile;
-		if(tile.type == Tile.TYPE_2) tilePixmap = Assets.blackTile;
+		// render score and time....
 		
-		int x = 11;
-		int y = 70;
-		g.drawPixmap(tilePixmap, x, y);
-				
-	}
+		
+		// render tiles...
+		List < Tile > tiles = world.tiles;
+		
+		// for each loop renders each tile in the array in turn...
+		for(Tile tile : tiles){
+
+			// clear previous pixmap...
+			Pixmap tilePixmap = null;
+			
+			// set type...
+			if(tile.type == Tile.TYPE_0) tilePixmap = Assets.whiteTile;
+			if(tile.type == Tile.TYPE_1) tilePixmap = Assets.redTile;
+			if(tile.type == Tile.TYPE_2) tilePixmap = Assets.blackTile;
+			
+			// set x and y...
+			int x = tile.x;
+			int y = tile.y;
+			
+			// draw as appropriate...
+			g.drawPixmap(tilePixmap, x, y);
+			
+		}	
+	} // end of drawWorld function...
 	
 	private void drawReadyUI() {
 		
