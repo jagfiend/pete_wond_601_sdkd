@@ -17,7 +17,8 @@ public class Assets {
 	public static Pixmap gameBoard;
 	public static Pixmap gameReady;
 	public static Pixmap gamePaused;
-	public static Pixmap gameOver;
+	public static Pixmap gameOverWinner;
+	public static Pixmap gameOverLoser;
 	public static Pixmap gameButtons;
 	public static Pixmap whiteTile;
 	public static Pixmap redTile;

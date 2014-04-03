@@ -24,7 +24,7 @@ public class Tile {
 		
 		// function to move tile one square further down the grid...
 		
-		y += 1;
+		y += 2;
 		
 	}
 	

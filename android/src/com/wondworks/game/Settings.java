@@ -32,8 +32,9 @@ public class Settings {
 		} finally { 
 			try {
 				if (in != null) in.close();
-			} catch (IOException e) { } 
-			
+			} catch (IOException e) {
+				
+			} 
 		}
 	}
 	
@@ -58,7 +59,8 @@ public class Settings {
 		for (int i = 0; i < 10; i++) {
 			if (highscores[i] < score) { 
 				for (int j = 9; j > i; j--)
-					highscores[j] = highscores[j - 1]; highscores[i] = score;
+					highscores[j] = highscores[j - 1];
+					highscores[i] = score;
 				break;
 			}
 		}

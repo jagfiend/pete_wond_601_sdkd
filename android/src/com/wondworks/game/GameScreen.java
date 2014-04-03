@@ -2,8 +2,6 @@ package com.wondworks.game;
 
 import java.util.List;
 
-import android.util.Log;
-
 import com.wondworks.game.framework.Game;
 import com.wondworks.game.framework.Graphics;
 import com.wondworks.game.framework.Input.TouchEvent;
@@ -18,8 +16,11 @@ public class GameScreen extends Screen {
 	
 	GameState state = GameState.Ready;
 	World world;
-	int oldScore = 0;
-	String score = "0";
+	int gameTime = 60;
+	String timeString = "60";
+	int gameScore = 100;
+	String scoreString = "100";
+	boolean saved = false;
 		
 	public GameScreen(Game game) {
 		super(game);
@@ -116,16 +117,33 @@ public class GameScreen extends Screen {
 					if (Settings.soundEnabled) Assets.click.play(1);
 					return;
 				}
-			}
-				
-			if(event.type == TouchEvent.TOUCH_DOWN){
+			
 				// loop over array to know what to do if tile pressed....
 				for(Tile tile : tiles){
-					if( inBounds(event, tile.x, tile.y, 40, 40) ){
-						// make a noise?
-						if(Settings.soundEnabled) Assets.tileSmash.play(1);
+					if( inBounds(event, tile.x, tile.y, 50, 50) ){
+				
+						// if white... 
+						if(tile.type == 0){
+							world.score += World.SCORE_INCREMENT;
+							// make a noise?
+							if(Settings.soundEnabled) Assets.tileSuccess.play(1);
+						}
+							
+						// if red...
+						if(tile.type == 1){
+							world.score -= World.SCORE_DECREMENT;
+							// make a noise?
+							if(Settings.soundEnabled) Assets.tileSmash.play(1);
+						}
+						
+						// if black...
+						if(tile.type == 2){
+							world.time -= World.TIME_DECREMENT;
+							// make a noise?
+							if(Settings.soundEnabled) Assets.tileFail.play(1);
+						}
+						
 						// remove from tiles array...
-						Log.i("Tile Removed:", "" + tile);
 						tiles.remove(tile);
 						return;
 					}
@@ -137,26 +155,50 @@ public class GameScreen extends Screen {
 		world.update(deltaTime); 
 		
 		// to do if game over...
-		if(world.gameOver) {
-		
-			if(Settings.soundEnabled) Assets.gameOverLose.play(1);
+		if(world.gameOver){
 			state = GameState.GameOver; 
+			return;
+		}
 		
+		// update time...
+		if(gameTime != world.time){
+			// checks to see if the game time is different world time (updated in world)
+			// if so, matches them and updates the string...
+			gameTime = world.time;
+			timeString = "" + gameTime;
 		}
 		
 		// update score...
-		if(oldScore != world.score) { 
-			
-			oldScore = world.score; 
-			score = "" + oldScore; 
-			if(Settings.soundEnabled) Assets.tileSmash.play(1);
-		
+		if(gameScore != world.score) { 
+			// checks to see if the game score is different world score (updated above)
+			// if so, matches them and updates the string...
+			gameScore = world.score; 
+			scoreString = "" + gameScore; 
 		}
 	}
 	
 	private void updateGameOver(List<TouchEvent> touchEvents) {
 		
+		// if winner add score to array...
+		if(world.winner && saved == false){
+			saveScore();
+		}
 		
+		int len = touchEvents.size(); 
+		for(int i = 0; i < len; i++) {
+			
+			TouchEvent event = touchEvents.get(i); 
+			
+			if(event.type == TouchEvent.TOUCH_UP) {
+				// what to do if gameover screen touched...
+				if( inBounds(event, 11, 70, 296, 296) ){
+					// restart game by reloading...
+					game.setScreen(new GameScreen(game));
+					if(Settings.soundEnabled) Assets.click.play(1); 
+					return;
+				}
+			}
+		}	
 	}
 
 	private void updatePaused(List<TouchEvent> touchEvents) {
@@ -187,7 +229,6 @@ public class GameScreen extends Screen {
 			return false;
 	}
 	
-	
 	// present functions render the graphics to the screen...
 
 	@Override
@@ -199,8 +240,10 @@ public class GameScreen extends Screen {
 		g.drawPixmap(Assets.gameHUD, 15, 10);
 		g.drawPixmap(Assets.gameBoard, 11, 70);
 		
+		// call draw world method...
 		drawWorld();
 		
+		// call dynamic elements dependent on gameState...
 		if(state == GameState.Ready) drawReadyUI();
 		if(state == GameState.Running) drawRunningUI();
 		if(state == GameState.Paused) drawPausedUI();
@@ -219,11 +262,12 @@ public class GameScreen extends Screen {
 	}
 	
 	private void drawWorld() {
-		
+		// function to render dynamic world elements...
 		Graphics g = game.getGraphics();
 		
 		// render score and time....
-		
+		drawText(g, timeString, 90, 26);
+		drawText(g, scoreString, 200, 26);
 		
 		// render tiles...
 		List < Tile > tiles = world.tiles;
@@ -277,7 +321,45 @@ public class GameScreen extends Screen {
 	}
 
 	private void drawGameOverUI() {
-		// code graphics for game over state...	
+		
+		Graphics g = game.getGraphics();
+		
+		// show game over overlay appropriate to win / lose...
+		if(world.winner){
+			// win...
+			g.drawPixmap(Assets.gameOverWinner, 11, 70);
+		} else {
+			// lose...
+			g.drawPixmap(Assets.gameOverLoser, 11, 70);
+		}
+		
+		// show nonfunctional pause button...
+		g.drawPixmap(Assets.gameButtons, 128, 395, 128, 0, 65, 65);
+		
+	}
+	
+	public void drawText(Graphics g, String line, int x, int y) { 
+		int len = line.length();
+		for (int i = 0; i < len; i++) {
+			char character = line.charAt(i);
+			int srcX = 0;
+			int srcWidth = 0;
+			if (character == ' ') { 
+				x += 16;
+				continue; 
+			} else {
+				srcX = (character - '0') * 16;
+				srcWidth = 16;
+			}
+			g.drawPixmap(Assets.numbers, x, y, srcX, 0, srcWidth, 30);
+		    x += srcWidth;    
+		} // end of for loop...
+	}
+	
+	public void saveScore(){
+		Settings.addScore(world.score); 
+		Settings.save(game.getFileIO());
+		saved = true;
 	}
 
 	@Override

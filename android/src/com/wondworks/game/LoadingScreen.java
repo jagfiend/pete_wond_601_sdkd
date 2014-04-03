@@ -30,7 +30,8 @@ public class LoadingScreen extends Screen {
 		Assets.gameBoard = g.newPixmap("img_gameBoard.png", PixmapFormat.ARGB4444);
 		Assets.gameReady = g.newPixmap("img_gameReady.png", PixmapFormat.ARGB4444);
 		Assets.gamePaused = g.newPixmap("img_gamePaused.png", PixmapFormat.ARGB4444);
-		Assets.gameOver = g.newPixmap("img_gameOver.png", PixmapFormat.ARGB4444);
+		Assets.gameOverWinner = g.newPixmap("img_gameOverWinner.png", PixmapFormat.ARGB4444);
+		Assets.gameOverLoser = g.newPixmap("img_gameOverLoser.png", PixmapFormat.ARGB4444);
 		Assets.gameButtons = g.newPixmap("img_gameButtons.png", PixmapFormat.ARGB4444);
 		Assets.whiteTile = g.newPixmap("img_whiteTile.png", PixmapFormat.ARGB4444);
 		Assets.redTile = g.newPixmap("img_redTile.png", PixmapFormat.ARGB4444);
