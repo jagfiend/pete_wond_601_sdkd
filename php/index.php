@@ -26,7 +26,6 @@
 		        $score["player_score"] = $row["player_score"];
 		        $score["player_locale"] = $row["player_locale"];
 		        $score["player_photo"] = $row["player_photo"];
-		        $score["created_at"] = $row["created_at"];
 
 		        array_push($scores, $score);
 		    }

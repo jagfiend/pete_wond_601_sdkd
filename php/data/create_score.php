@@ -6,23 +6,22 @@
 $response = array();
 
 // check for required fields
-if (isset($_POST['player_name']) && isset($_POST['player_score,']) 
-    && isset($_POST['player_locale']) && isset($POST_['player_photo'])) {
+if (isset($_POST['player_name']) && isset($_POST['player_score,']) && isset($_POST['player_locale'])) {
     
+    // define variables...
     $player_name = $_POST['player_name'];
     $player_score, = $_POST['player_score,'];
     $player_locale = $_POST['player_locale'];
-    $player_locale = $_POST['player_photo'];
 
-    // include db connect class
+    // include db connect class...
     require_once __DIR__ . '/db_connect.php';
 
-    // connecting to db
+    // connecting to db...
     $db = new DB_CONNECT();
 
-    // mysql inserting a new row
-    $result = mysql_query("INSERT INTO high_scores(player_name, player_score, player_locale, player_photo) 
-                            VALUES('$player_name', '$player_score', '$player_locale', '$player_photo')");
+    // mysql inserting a new row...
+    $result = mysql_query("INSERT INTO high_scores(player_name, player_score, player_locale, created_at) 
+                            VALUES('$player_name', '$player_score', '$player_locale', NOW())");
 
     // check if row inserted or not
     if ($result) {

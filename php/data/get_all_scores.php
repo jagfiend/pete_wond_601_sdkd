@@ -25,7 +25,6 @@ if (mysql_num_rows($result) > 0) {
         $score["player_name"] = $row["player_name"];
         $score["player_score"] = $row["player_score"];
         $score["player_locale"] = $row["player_locale"];
-        $score["player_photo"] = $row["player_photo"];
         $score["created_at"] = $row["created_at"];
 
         // push single product into final response array
