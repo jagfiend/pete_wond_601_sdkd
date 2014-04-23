@@ -7,7 +7,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 
 import com.wondworks.game.framework.FileIO;
-import com.wondworks.game.framework.GetScores;
 
 public class Settings {	
 	// boolean controls whether sounds are played where appropriate...
@@ -17,10 +16,16 @@ public class Settings {
 	public static int[] highscores = new int[] { 1120, 1110, 1100, 190, 180, 170, 165, 160, 155, 150 };
 	
 	// the class then attempts to retrieve the high scores and the replace the default values with these...
-	public GetScores scoresData = new GetScores();
+	public static GetScores scoresData;
 	
 	public static void load(FileIO files) { 
+	
+		System.out.println("Settings: Loading!!");
+	
+		scoresData = new GetScores();
+		
 		BufferedReader in = null;
+		
 		try {
 			
 			in = new BufferedReader( new InputStreamReader( files.readFile(".game") ));
@@ -39,12 +44,14 @@ public class Settings {
 			try {
 				if (in != null) in.close();
 			} catch (IOException e) {
-				
+				// catch exception...
 			} 
 		}
+		
 	}
 	
 	public static void save(FileIO files) { 
+		
 		BufferedWriter out = null;
 		try {
 			out = new BufferedWriter( new OutputStreamWriter( files.writeFile(".game") ));
@@ -59,9 +66,11 @@ public class Settings {
 				if (out != null) out.close();
 			} catch (IOException e) { }
 		}
+		
 	}
 
-	public static void addScore(int score) { 
+	public static void addScore(int score) {
+		
 		for (int i = 0; i < 10; i++) {
 			if (highscores[i] < score) { 
 				for (int j = 9; j > i; j--)
@@ -70,5 +79,6 @@ public class Settings {
 				break;
 			}
 		}
-	}
+	
+	}	
 }
