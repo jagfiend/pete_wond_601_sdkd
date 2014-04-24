@@ -14,8 +14,10 @@ public class HighscoreScreen extends Screen {
 	
 	
 	public HighscoreScreen(Game game) {
+		// instantiate the screen through the super class...
 		super(game);
 		
+		// populate string array with values from the high scores integer array....
 		for ( int i=0; i < 10; i++) {
 			lines[i] = "" + (i+1) + " " + Settings.highscores[i] ;
 		}
@@ -63,7 +65,7 @@ public class HighscoreScreen extends Screen {
 		int y = 75;
 		
 		for (int i=0; i<10; i++){
-			
+			// render each score value from the lines array...
 			drawText(g, lines[i], 16, y);
 			y += 33;
 		
@@ -74,6 +76,8 @@ public class HighscoreScreen extends Screen {
 
 	public void drawText(Graphics g, String line, int x, int y) { 
 		
+		// draw text function renders the numbers in the array based on the character code...
+		
 		int len = line.length();
 		
 		for (int i = 0; i < len; i++) {
@@ -83,6 +87,7 @@ public class HighscoreScreen extends Screen {
 			int srcX = 0;
 			int srcWidth = 0;
 			
+			// skip white space...
 			if (character == ' ') { 
 				x += 16;
 				continue; 

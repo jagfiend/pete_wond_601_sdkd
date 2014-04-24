@@ -1,13 +1,13 @@
 # ************************************************************
 # Sequel Pro SQL dump
-# Version 4004
+# Version 4096
 #
 # http://www.sequelpro.com/
 # http://code.google.com/p/sequel-pro/
 #
-# Host: localhost (MySQL 5.5.25)
+# Host: localhost (MySQL 5.5.34)
 # Database: db_601
-# Generation Time: 2014-03-23 10:17:59 +0000
+# Generation Time: 2014-04-24 13:53:59 +0000
 # ************************************************************
 
 
@@ -139,7 +139,9 @@ VALUES
 	(97,'player_name',98,'UNK','default_avatar.jpg','0000-00-00 00:00:00'),
 	(98,'player_name',99,'UNK','default_avatar.jpg','0000-00-00 00:00:00'),
 	(99,'player_name',100,'UNK','default_avatar.jpg','0000-00-00 00:00:00'),
-	(100,'player_name',1000,'UNK','default_avatar.jpg','0000-00-00 00:00:00');
+	(100,'player_name',1000,'UNK','default_avatar.jpg','0000-00-00 00:00:00'),
+	(101,'Pete Wond',1000,'UK','default_avatar.jpg','2014-04-24 11:23:53'),
+	(102,'Pete Wond',67,'UK','default_avatar.jpg','2014-04-24 12:06:20');
 
 /*!40000 ALTER TABLE `high_scores` ENABLE KEYS */;
 UNLOCK TABLES;

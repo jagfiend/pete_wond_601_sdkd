@@ -22,7 +22,7 @@ public class Tile {
 	
 	public void move(){
 		
-		// function to move tile one square further down the grid...
+		// function to move tile further down the grid...
 		
 		y += 2;
 		

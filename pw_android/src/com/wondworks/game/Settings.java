@@ -5,25 +5,53 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+import java.util.HashMap;
 
+import com.wondworks.game.data.CreateScore;
+import com.wondworks.game.data.GetScores;
 import com.wondworks.game.framework.FileIO;
 
 public class Settings {	
 	// boolean controls whether sounds are played where appropriate...
 	public static boolean soundEnabled = true;
 	
-	// this creates a basic highscore array to be used if no connection can be made to the database...
-	public static int[] highscores = new int[] { 1120, 1110, 1100, 190, 180, 170, 165, 160, 155, 150 };
-	
-	// the class then attempts to retrieve the high scores and the replace the default values with these...
+	// this creates an integer array to be rendered on the highscore screen...
+	public static int[] highscores = new int[]{10,9,8,7,6,5,4,3,2,1};
+
+	// variable for loading scores from the database...
 	public static GetScores scoresData;
 	
+	// variable for loading the create score load...
+	public static CreateScore newScore;
+	
 	public static void load(FileIO files) { 
-	
-		System.out.println("Settings: Loading!!");
-	
-		scoresData = new GetScores();
 		
+		// call get scores class...
+		try {
+			scoresData = new GetScores();
+		} catch (Throwable e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+				
+		// retrive list of scores from the database result object...
+		ArrayList<HashMap<String, String>> scoresFromDatabase = scoresData.getScoresList();
+	
+		// loop over database result and pick out top ten scores for basic rendering exercise...
+		String scoreAsString;
+		int scoreAsInt;
+		
+		for (int i = 0; i < 10; i++) {
+			// retrieve score value from the object...
+			scoreAsString = scoresFromDatabase.get(i).get("player_score").toString();
+			// convert string value into an integer...
+			scoreAsInt = Integer.parseInt(scoreAsString);
+			// replace default value...
+			highscores[i] = scoreAsInt;
+		}
+		
+		// reader and writer stuff....
 		BufferedReader in = null;
 		
 		try {
@@ -70,7 +98,9 @@ public class Settings {
 	}
 
 	public static void addScore(int score) {
-		
+		// ideally this function adds a score to the database and totally reloads the scores...
+		// for now it updates the local array and adds to the remote database...not too shabby...
+
 		for (int i = 0; i < 10; i++) {
 			if (highscores[i] < score) { 
 				for (int j = 9; j > i; j--)
@@ -79,6 +109,8 @@ public class Settings {
 				break;
 			}
 		}
+		
+		newScore = new CreateScore(score);
 	
 	}	
 }

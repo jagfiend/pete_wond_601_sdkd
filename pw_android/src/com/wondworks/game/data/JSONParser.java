@@ -1,4 +1,4 @@
-package com.wondworks.game.framework;
+package com.wondworks.game.data;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -64,7 +64,6 @@ public class JSONParser {
 				is = httpEntity.getContent();
 			}			
 			
-
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		} catch (ClientProtocolException e) {
